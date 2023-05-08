@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Stock Prediction</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='css/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">Stock Prediction</h1>
+            <nav>
+                <!-- <ul class="menu"> -->
+                <!-- <li><a href="{{ url_for('home') }}">Home</a></li> -->
+                <!-- <li><a href="{{ url_for('about') }}">About</a></li> -->
+                <!-- </ul> -->
+            </nav>
+        </div>
+    </header>
+
+    <form action="/ticker/">
+        <label for="stock-search">Enter Stock Symbols</label> <br />
+        <input id="stock-search" type="text" name="symbol" placeholder="eg. AAPL MSFT TSLA" size="75"></input>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div class="tab">
+        <button class="tablinks" onclick="goToPrediction('{{ companies[0] }}')">{{ prediction }}</button>
+        {% for chart in charts %}
+        <button class="tablinks" onclick="openChart(event, '{{ chart }}')">{{ chart }}</button>
+        {% endfor %}
+    </div>
+
+    <div class="container">
+        <div class="grid-wrapper">
+            {% for chart in charts %}
+            <div id="{{ chart }}" class="tabcontent">
+                <img src="{{ url_for('static', filename=companies[0] + '_' + chart + ".png") }}"
+                    onerror="this.src='static/error.jpg'" alt="{{ companies[0] }} image">
+            </div>
+            {% endfor %}
+            <div id="{{ prediction }}" class="tabcontent">
+                <img src="{{ url_for('static', filename=companies[0] + '_' + prediction + ".png") }}"
+                    onerror="this.src='static/error.jpg'" alt="{{ companies[0] }} image">
+            </div>
+            <div class="statistics">
+                {% for key, value in result.items() %}
+                <div class="statistic-item" onclick="goToLink('{{ key }}')">
+                    <div class="stat-key">{{ key }}</div>
+                    <div class="stat-value">{{ value }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div id="table-container">
+        <table>
+            <h1>
+                {% for table in tables %}
+                <h2>{{titles[loop.index]}}</h2>
+                {{ table|safe }}
+                {% endfor %}
+            </h1>
+        </table>
+    </div>
+
+    <script>
+        if (window.location.href !== '/') {
+            history.replaceState(null, '', '/');
+        }
+
+        let tabcontent = document.getElementsByClassName("tabcontent");
+        let tablinks = document.getElementsByClassName("tablinks");
+        let statistics = document.getElementsByClassName("statistic-item");
+    
+        function openChart(evt, chartName) {
+            for (let i = 0, len = tabcontent.length; i < len; ++i) {
+                if (tabcontent[i].id !== chartName) {
+                    tabcontent[i].style.display = "none";
+                }
+            }
+    
+            for (let i = 0, len = tablinks.length; i < len; ++i) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+    
+            document.getElementById(chartName).style.display = "block";
+            if (evt) {
+                evt.currentTarget.className += " active";
+            }
+        }
+    
+        for (let i = 0, len = statistics.length; i < len; ++i) {
+            statistics[i].classList.remove("active");
+            if (statistics[i].querySelector(".stat-key").textContent.trim() === '{{ companies[0] }}') {
+                statistics[i].classList.add("active");
+            }
+        }
+    
+        if (event) {
+            openChart(event, '{{ tab }}');
+        } else if ('{{ tab }}' == 'Prediction') {
+            openChart(null, '{{ tab }}');
+            tablinks[0].className += " active";
+        } else if ('{{ tab }}' == '1M') {
+            openChart(null, '{{ tab }}');
+            tablinks[2].className += " active";
+        }
+    
+        function goToLink(company) {
+            window.location.href = `/ticker/?symbol=${company}`;
+        }
+    
+        function goToPrediction(company) {
+            window.location.href = `/predict/?symbol=${company}`;
+        }
+    </script>
+    
+    
+
+</body>
+
+</html>
