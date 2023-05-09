@@ -7,13 +7,13 @@
 A stock price predication application that allows end users to view predictions and historical data for stocks.
 
 ### Project Demonstration
-##### WARNING: Site is hosted on a slow server at VIU and scrapes Yahoo Finance for all price data. It is also subject to be taken down at any time.
-## [Live Demo](http://104.128.240.111/) 
+###### DISCLAIMER: Site is hosted on a slow server at VIU and scrapes Yahoo Finance for all price data. It is also subject to be taken down at any time.
+### [Live Demo](http://104.128.240.111/) 
 
 
 ### Links
+- [Data Model Used](https://data-flair.training/blogs/stock-price-prediction-machine-learning-project-in-python/)
 - [Project Github](https://github.com/johnfeild/StockPrediction)
-
 
 ### Tech
 - [Python](https://www.python.org/)
